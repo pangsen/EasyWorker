@@ -2,7 +2,7 @@
 
 <pre>
 <code>
-using (var worker = new Worker(maxThreadCount))
+using (var worker = new Worker())
 {
     worker.AddHandler(new IntMessageHandler());
     worker.AddHandler(new StringMessageHandler());
