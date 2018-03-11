@@ -64,7 +64,7 @@ worker.AddHandler(new SiteHandler());
 //单个
 worker.Publish( new SiteProfile()));
 //批量
-worker.Publish( new List<SiteProfile>());    
+worker.Publish( new List&lt;SiteProfile>());    
 </code>
 </pre>
 
