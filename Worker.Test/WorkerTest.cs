@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Worker.Test
 {
-
     public class StringMessage : IMessgae
     {
         public string Message { get; set; }
@@ -40,7 +39,7 @@ namespace Worker.Test
 
         public void Handle(IntMessage message)
         {
-            //Console.WriteLine(JsonConvert.SerializeObject(message));
+            Console.WriteLine(JsonConvert.SerializeObject(message));
         }
 
     }
@@ -49,24 +48,22 @@ namespace Worker.Test
         [Test]
         public void Test()
         {
-            var list = new List<int>() { 10,  30,  50,  70,  90};
+            var list = new List<int>() { 10, 30, 50, 70, 90 };
             list.ForEach(maxThreadCount =>
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
-                using (var worker = new Worker(maxThreadCount))
-                {
-                    worker.AddHandler(new IntMessageHandler());
-                    worker.AddHandler(new StringMessageHandler());
-                    worker.AddHandler(new SecondStringMessageHandler());
-                    worker.Start();
+                var worker = WorkerOption.New.CreateWorker();
+                worker.AddHandler(new IntMessageHandler());
+                worker.AddHandler(new StringMessageHandler());
+                worker.AddHandler(new SecondStringMessageHandler());
+                worker.Start();
 
 
-                    worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
-                    worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
-                    worker.WorkUntilComplete();
-                }
-                stopWatch.Stop();
+                worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
+                worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
+                worker.WaitUntilNoMessage();
+                worker.Stop();
                 Console.WriteLine($"maxThreadCount:{maxThreadCount},Milliseconds:{stopWatch.ElapsedMilliseconds}");
             });
 

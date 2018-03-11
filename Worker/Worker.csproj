@@ -40,8 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementation\DefaultHandlerManager.cs" />
+    <Compile Include="Implementation\DefaultMessageQueue.cs" />
+    <Compile Include="Interface\IConsumer.cs" />
+    <Compile Include="Interface\IHander.cs" />
+    <Compile Include="Interface\IHandlerManager.cs" />
+    <Compile Include="Interface\IMessageQueue.cs" />
+    <Compile Include="Interface\IMessgae.cs" />
+    <Compile Include="Implementation\MultipleThreadConsumer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Worker.cs" />
+    <Compile Include="WorkerOption.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
