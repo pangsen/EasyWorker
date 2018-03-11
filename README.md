@@ -2,7 +2,7 @@
 
 EasyWorker可以在多线程条件下帮助你分发和处理消息。
 
-基本用法如下
+>基本用法如下
 
 <pre>
 <code>
@@ -21,7 +21,7 @@ using (var worker = new Worker())
 </code>
 </pre>
 
-自定义消息
+>自定义消息
 所有消息必须实现 IMessage 接口
 <pre>
 <code>
@@ -32,7 +32,7 @@ public class SiteProfile:IMessgae
 </code>
 </pre>
 
-自定义消息处理
+>自定义消息处理
 所有消息处理函数必须实现泛型接口IHandler<>
 <pre>
 <code>
@@ -45,20 +45,20 @@ public class SiteHandler : IHander&lt;SiteProfile>
 }
 </code>
 </pre>
-实例化Worker
+>实例化Worker
 实例化Worker需要两个参数MaxThreadCount和DelaySecondWhenNoMessageCome,默认是分别为MaxThreadCount:10和DelaySecondWhenNoMessageCome:5.
 <pre>
 <code>
 var worker = new Worker(maxThreadCount:10,delaySecondWhenNoMessageCome:5)
 </code>
 </pre>
-注册Handler
+>注册Handler
 <pre>
 <code>
 worker.AddHandler(new SiteHandler());
 </code>
 </pre>
-Publish Message
+>Publish Message
 <pre>
 <code>
 //单个
@@ -68,7 +68,7 @@ worker.Publish( new List<SiteProfile>());
 </code>
 </pre>
 
-等待已经Publish的消息处理完成
+>等待已经Publish的消息处理完成
 <pre>
 <code>
 worker.WorkUntilComplete();
