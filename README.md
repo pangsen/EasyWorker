@@ -6,18 +6,17 @@ EasyWorker可以在多线程条件下帮助你分发和处理消息。
 
 <pre>
 <code>
-using (var worker = new Worker())
-{
-    worker.AddHandler(new IntMessageHandler());
-    worker.AddHandler(new StringMessageHandler());
-    worker.AddHandler(new SecondStringMessageHandler());
-    worker.Start();
+var worker = WorkerOption.New.CreateWorker();
+worker.AddHandler(new IntMessageHandler());
+worker.AddHandler(new StringMessageHandler());
+worker.AddHandler(new SecondStringMessageHandler());
+worker.Start();
 
 
-    worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
-    worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
-    worker.WorkUntilComplete();
-}
+worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
+worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
+worker.WaitUntilNoMessage();
+worker.Stop();
 </code>
 </pre>
 
@@ -45,15 +44,7 @@ public class SiteHandler : IHander&lt;SiteProfile>
 }
 </code>
 </pre>
->实例化Worker
-实例化Worker需要两个参数MaxThreadCount和DelaySecondWhenNoMessageCome,默认是分别为MaxThreadCount:10和DelaySecondWhenNoMessageCome:5.
-<pre>
-<code>
-var worker = new Worker(maxThreadCount:10,delaySecondWhenNoMessageCome:5);
-//Start work 
-worker.Start();
-</code>
-</pre>
+
 >注册Handler
 <pre>
 <code>
@@ -73,6 +64,6 @@ worker.Publish( new List&lt;SiteProfile>());
 >等待已经Publish的消息处理完成
 <pre>
 <code>
-worker.WorkUntilComplete();
+worker.WaitUntilNoMessage();
 </code>
 </pre>
