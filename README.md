@@ -49,7 +49,9 @@ public class SiteHandler : IHander&lt;SiteProfile>
 实例化Worker需要两个参数MaxThreadCount和DelaySecondWhenNoMessageCome,默认是分别为MaxThreadCount:10和DelaySecondWhenNoMessageCome:5.
 <pre>
 <code>
-var worker = new Worker(maxThreadCount:10,delaySecondWhenNoMessageCome:5)
+var worker = new Worker(maxThreadCount:10,delaySecondWhenNoMessageCome:5);
+//Start work 
+worker.Start();
 </code>
 </pre>
 >注册Handler
