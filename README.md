@@ -22,7 +22,7 @@ using (var worker = new Worker())
 </pre>
 
 >自定义消息
-所有消息必须实现 IMessage 接口
+所有消息必须实现 *IMessage* 接口
 <pre>
 <code>
 public class SiteProfile:IMessgae
@@ -33,7 +33,7 @@ public class SiteProfile:IMessgae
 </pre>
 
 >自定义消息处理
-所有消息处理函数必须实现泛型接口IHandler<>
+所有消息处理函数必须实现泛型接口*IHandler&lt;>*
 <pre>
 <code>
 public class SiteHandler : IHander&lt;SiteProfile>
