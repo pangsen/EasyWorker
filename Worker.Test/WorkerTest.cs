@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,14 +25,14 @@ namespace Worker.Test
     {
         public void Handle(StringMessage message)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(message));
+            //Console.WriteLine(JsonConvert.SerializeObject(message));
         }
     }
     public class SecondStringMessageHandler : IHander<StringMessage>
     {
         public void Handle(StringMessage message)
         {
-            Console.WriteLine("SecondStringMessageHandler:" + JsonConvert.SerializeObject(message));
+            //Console.WriteLine("SecondStringMessageHandler:" + JsonConvert.SerializeObject(message));
         }
     }
     public class IntMessageHandler : IHander<IntMessage>
@@ -38,7 +40,7 @@ namespace Worker.Test
 
         public void Handle(IntMessage message)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(message));
+            //Console.WriteLine(JsonConvert.SerializeObject(message));
         }
 
     }
@@ -47,21 +49,27 @@ namespace Worker.Test
         [Test]
         public void Test()
         {
-            var worker = new Worker();
-
-            worker.AddHandler(new IntMessageHandler());
-            worker.AddHandler(new StringMessageHandler());
-            worker.AddHandler(new SecondStringMessageHandler());
-
-            worker.AddJob(new StringMessage() { Message = "strting Message" });
-            worker.AddJob(new IntMessage() { Message = 100 });
-
-            Task.Run(() => worker.Start());
-            while (worker.HasValue())
+            var list = new List<int>() { 10,  30,  50,  70,  90};
+            list.ForEach(maxThreadCount =>
             {
-                Task.Delay(TimeSpan.FromMilliseconds(10)).GetAwaiter().GetResult();
-            }
-            worker.Stop();
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+                using (var worker = new Worker(maxThreadCount))
+                {
+                    worker.AddHandler(new IntMessageHandler());
+                    worker.AddHandler(new StringMessageHandler());
+                    worker.AddHandler(new SecondStringMessageHandler());
+                    worker.Start();
+
+
+                    worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
+                    worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
+                    worker.WorkUntilComplete();
+                }
+                stopWatch.Stop();
+                Console.WriteLine($"maxThreadCount:{maxThreadCount},Milliseconds:{stopWatch.ElapsedMilliseconds}");
+            });
+
         }
     }
 }

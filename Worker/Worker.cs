@@ -6,107 +6,140 @@ using System.Threading.Tasks;
 
 namespace Worker
 {
-    
+
     public interface IMessgae { }
     public interface IHander<in T> where T : IMessgae
     {
         void Handle(T message);
     }
-    public class Worker
+    public class Worker : IDisposable
     {
-        private object _lock = new object();
-        private Queue<IMessgae> _queue { get; set; }
-        private List<IMessgae> _pending { get; set; }
-        private List<object> _handlers { get; set; }
-        private int _maxTaskCount { get; set; } = 10;
-        private bool _stop { get; set; }
-        private TimeSpan _delayTimeSpan { get; set; } = TimeSpan.FromSeconds(5);
+        private readonly object _lock = new object();
+        private Queue<IMessgae> Queue { get; set; }
+        private List<Task> PendingTasks { get; set; }
+        private List<object> Handlers { get; set; }
 
-        public Worker()
+        private bool IsStop { get; set; }
+        private int MaxTaskCount { get; set; }
+        private TimeSpan DelayTimeWhenNoMessageCome { get; set; }
+
+        public Worker(int maxThreadCount = 10, int delaySecondsWhenNoMessageCome = 5)
         {
-            _queue = new Queue<IMessgae>();
-            _pending = new List<IMessgae>();
-            _handlers = new List<object>();
+            MaxTaskCount = maxThreadCount;
+            DelayTimeWhenNoMessageCome = TimeSpan.FromSeconds(delaySecondsWhenNoMessageCome);
+            Queue = new Queue<IMessgae>();
+            PendingTasks = new List<Task>();
+            Handlers = new List<object>();
         }
-        public void AddJob<T>(T t) where T : IMessgae
+        public void Publish<T>(T t) where T : IMessgae
         {
+            if (IsStop) { throw new Exception("Worker already stop"); }
             lock (_lock)
             {
-                _queue.Enqueue(t);
+                Queue.Enqueue(t);
             }
 
         }
-        public void AddJobs<T>(IEnumerable<T> list) where T : IMessgae
+        public void Publish<T>(IEnumerable<T> list) where T : IMessgae
         {
             lock (_lock)
             {
-                foreach (var item in list)
+                foreach (var message in list)
                 {
-                    AddJob(item);
+                    Publish(message);
                 }
             }
         }
         public void AddHandler<T>(IHander<T> handler) where T : IMessgae
         {
-            _handlers.Add(handler);
+            Handlers.Add(handler);
+        }
+
+
+        public void WorkUntilComplete()
+        {
+            while (HasValue())
+            {
+                HandleMessageFromQueue();
+            }
+            Task.WaitAll(PendingTasks.ToArray());
         }
         public void Start()
         {
-
-            while (!_stop)
+            Task.Run(() =>
             {
-                if (_pending.Count < _maxTaskCount && _queue.Any())
+                while (!IsStop)
                 {
-                    IMessgae message;
-                    lock (_lock)
-                    {
-                        message = _queue.Dequeue();
-                    }
-
-                    _pending.Add(message);
-
-                    Task.Run(() =>
-                    {
-                        Handle((dynamic)message);
-                        _pending.Remove(message);
-                    });
+                    HandleMessageFromQueue();
                 }
-                else if (!_queue.Any())
-                {
-                    Task.Delay(_delayTimeSpan).GetAwaiter().GetResult();
-                }
-                else
-                {
-                    Task.Delay(TimeSpan.FromMilliseconds(10)).GetAwaiter().GetResult();
-                }
-            }
-            while (_pending.Any())
-            {
-                Task.Delay(TimeSpan.FromMilliseconds(100)).GetAwaiter().GetResult();
-            }
+            });
         }
         public void Stop()
         {
-            _stop = true;
-        }
-        public void SetDelayTime(TimeSpan delayTime)
-        {
-            _delayTimeSpan = delayTime;
+            IsStop = true;
         }
         public bool HasValue()
         {
-            return _queue.Any();
+            lock (_lock)
+            {
+                return Queue.Any();
+            }
         }
+
+        public void Dispose()
+        {
+            Stop();
+        }
+
         private void Handle<T>(T message) where T : IMessgae
         {
-            _handlers.ForEach(a =>
+            Handlers.ForEach(a =>
             {
-                if (typeof(IHander<>).MakeGenericType(message.GetType()).IsAssignableFrom(a.GetType()))
+                if (typeof(IHander<>).MakeGenericType(message.GetType()).IsInstanceOfType(a))
                 {
                     var handler = (IHander<T>)a;
                     handler.Handle(message);
                 }
             });
+        }
+
+        private void HandleMessageFromQueue()
+        {
+            bool isThereQueuedMessage;
+            int pendingTasksCount;
+
+            lock (_lock)
+            {
+                isThereQueuedMessage = Queue.Any();
+                pendingTasksCount = PendingTasks.Count;
+                if (isThereQueuedMessage && pendingTasksCount < MaxTaskCount)
+                {
+                    var message = Queue.Dequeue();
+                    PendingTasks.Add(
+                        Task.Run(() =>
+                        {
+                            Handle((dynamic)message);
+                        })
+                    );
+
+                }
+                PendingTasks = PendingTasks.Where(a => !a.IsCompleted).ToList();
+            }
+            if (!isThereQueuedMessage)
+            {
+                Task.Delay(DelayTimeWhenNoMessageCome).GetAwaiter().GetResult();
+            }
+            if (pendingTasksCount == MaxTaskCount)
+            {
+                 Task.Delay(TimeSpan.FromMilliseconds(10)).GetAwaiter().GetResult();
+            }
+           
+            
+        }
+
+        ~Worker()
+        {
+            Dispose();
         }
     }
 }
