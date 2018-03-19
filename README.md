@@ -8,11 +8,11 @@ EasyWorker可以在多线程条件下帮助你分发和处理消息。
 <code>
 
 var worker = WorkerOption
-.New
-.EnableInterceptor()
-.SetMaxTaskCount(maxThreadCount)
-.SetDelaySecondsWhenNoMessageCome(5)
-.CreateWorker();
+            .New
+            .EnableInterceptor()
+            .SetMaxTaskCount(maxThreadCount)
+            .SetDelaySecondsWhenNoMessageCome(5)
+            .CreateWorker();
 worker.AddHandler(new IntMessageHandler());
 worker.AddHandler(new StringMessageHandler());
 worker.AddHandler(new SecondStringMessageHandler());
