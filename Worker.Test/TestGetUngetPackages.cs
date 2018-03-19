@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Worker.Interface;
 
 namespace Worker.Test
 {
@@ -24,7 +26,7 @@ namespace Worker.Test
 
     public class SiteHandler : IHander<SiteProfile>
     {
-        public void Handle(SiteProfile message)
+        public void Handle(SiteProfile message,CancellationToken cancellationToken)
         {
             var document = new HtmlDocument();
             using (var client = new HttpClient())
@@ -45,7 +47,7 @@ namespace Worker.Test
     }
     public class ArticleHandler : IHander<ArticleProfile>
     {
-        public void Handle(ArticleProfile message)
+        public void Handle(ArticleProfile message, CancellationToken cancellationToken)
         {
             var document = new HtmlDocument();
             using (var client = new HttpClient())

@@ -2,8 +2,8 @@
 {
     public static class WorkerProvider
     {
-        private static Worker Worker { get; set; }
-        public static Worker GetWorker()
+        private static IWorker Worker { get; set; }
+        public static IWorker GetWorker()
         {
             if (Worker == null)
             {

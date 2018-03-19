@@ -2,10 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Worker.Interface;
 
 namespace Worker
 {
-    public class Worker : IDisposable
+    public interface IWorker
+    {
+        void AddHandler<T>(IHander<T> handler) where T : IMessgae;
+        void Publish<T>(T message) where T : IMessgae;
+        void Publish<T>(IEnumerable<T> messages) where T : IMessgae;
+        void Start();
+        void Stop();
+        void WaitUntilNoMessage();
+    }
+    public class Worker : IWorker, IDisposable
     {
         private readonly WorkerOption _options;
         private IMessageQueue MessageQueue => _options.MessageQueue;
