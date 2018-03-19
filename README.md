@@ -44,7 +44,6 @@ public class SiteHandler : IHander&lt;SiteProfile>
 }
 </code>
 </pre>
-
 >注册Handler
 <pre>
 <code>
@@ -67,3 +66,6 @@ worker.Publish( new List&lt;SiteProfile>());
 worker.WaitUntilNoMessage();
 </code>
 </pre>
+>EnableInterceptor
+>SetMaxTaskCount
+>SetDelaySecondsWhenNoMessageCome
