@@ -6,17 +6,23 @@ EasyWorker可以在多线程条件下帮助你分发和处理消息。
 
 <pre>
 <code>
-var worker = WorkerOption.New.CreateWorker();
+
+var worker = WorkerOption
+.New
+.EnableInterceptor()
+.SetMaxTaskCount(maxThreadCount)
+.SetDelaySecondsWhenNoMessageCome(5)
+.CreateWorker();
 worker.AddHandler(new IntMessageHandler());
 worker.AddHandler(new StringMessageHandler());
 worker.AddHandler(new SecondStringMessageHandler());
 worker.Start();
 
-
 worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
 worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
 worker.WaitUntilNoMessage();
 worker.Stop();
+
 </code>
 </pre>
 
