@@ -66,6 +66,8 @@ worker.Publish( new List&lt;SiteProfile>());
 worker.WaitUntilNoMessage();
 </code>
 </pre>
->EnableInterceptor
+>EnableIntercepto
+
 >SetMaxTaskCount
+
 >SetDelaySecondsWhenNoMessageCome
