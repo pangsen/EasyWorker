@@ -7,17 +7,18 @@ using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Worker.Implementation;
 using Worker.Interface;
 
 namespace Worker.Test
 {
 
-    public class SiteProfile : IMessgae
+    public class SiteProfile : Messgae
     {
         public string SiteAddress { get; set; }
     }
 
-    public class ArticleProfile : IMessgae
+    public class ArticleProfile : Messgae
     {
         public string NugetLink { get; set; }
         public string ProjectLink { get; set; }

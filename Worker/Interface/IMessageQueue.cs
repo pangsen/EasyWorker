@@ -1,10 +1,15 @@
-﻿namespace Worker.Interface
+﻿using System.Collections.Generic;
+using Worker.Implementation;
+
+namespace Worker.Interface
 {
     public interface IMessageQueue
     {
-        void Enqueue(IMessgae message);
-        IMessgae Dequeue();
+        void Enqueue(Messgae message);
+        Messgae Dequeue();
         int Count { get; }
         bool HasValue();
+        void Save();
+        Queue<Messgae> Load();
     }
 }

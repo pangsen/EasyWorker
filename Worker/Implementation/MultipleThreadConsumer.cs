@@ -10,6 +10,8 @@ namespace Worker.Implementation
     public class MultipleThreadConsumer : IConsumer
     {
         private readonly ILogger _logger;
+        private  IHistoryMessageManager HistoryMessageManager { get; set; }
+        private  IErrorMessageManager ErrorMessageManager { get; set; }
         public IMessageQueue MessageQueue { get; set; }
         public IHandlerManager HandlerManager { get; set; }
         public int PendingTaskCount { get; set; }
@@ -17,9 +19,18 @@ namespace Worker.Implementation
         private TimeSpan DelayTimeWhenNoMessageCome { get; set; }
         private int MaxTaskCount { get; set; }
         private static readonly object Lock = new object();
-        public MultipleThreadConsumer(IMessageQueue messageQueue, IHandlerManager handlerManager, ILogger logger, int maxTaskCount = 10, int delaySecondsWhenNoMessageCome = 5)
+        public MultipleThreadConsumer(
+            IMessageQueue messageQueue,
+            IHandlerManager handlerManager,
+            ILogger logger,
+            IHistoryMessageManager historyMessageManager,
+            IErrorMessageManager errorMessageManager,
+            int maxTaskCount = 10,
+            int delaySecondsWhenNoMessageCome = 5)
         {
             _logger = logger;
+            HistoryMessageManager = historyMessageManager;
+            ErrorMessageManager = errorMessageManager;
             MessageQueue = messageQueue;
             HandlerManager = handlerManager;
             MaxTaskCount = maxTaskCount;
@@ -51,6 +62,8 @@ namespace Worker.Implementation
             DelayTimeWhenNoMessageCome = TimeSpan.FromSeconds(delaySecondsWhenNoMessageCome);
         }
 
+    
+
 
         private void IncreasePendingTaskCount()
         {
@@ -77,13 +90,16 @@ namespace Worker.Implementation
                     {
 
                         HandlerManager.Handle(message, CancellationToken.None);
+                        HistoryMessageManager.AddHistoryMessgae(message);
                         DecreasePendingTaskCount();
                     })
                     .ContinueWith((t) =>
                     {
-                        _logger.Write(t?.Exception?.InnerException?.Message);
+                        _logger.Write(t?.Exception?.ToTetailMessage());
+                        ErrorMessageManager.AddErrorMessgae(message);
                         DecreasePendingTaskCount();
                     }, TaskContinuationOptions.OnlyOnFaulted);
+
             }
             else if (PendingTaskCount == 0 && !MessageQueue.HasValue())
             {

@@ -8,17 +8,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Polly;
+using Polly.Timeout;
+using Worker.Implementation;
 using Worker.Interface;
 using Worker.logger;
+using Worker.Persistence;
 
 namespace Worker.Test
 {
-    public class StringMessage : IMessgae
+    public class StringMessage : Messgae
     {
         public string Message { get; set; }
     }
 
-    public class IntMessage : IMessgae
+    public class IntMessage : Messgae
     {
         public int Message { get; set; }
     }
@@ -28,14 +32,14 @@ namespace Worker.Test
         public void Handle(StringMessage message, CancellationToken cancellationToken)
         {
 
-            //            Console.WriteLine(JsonConvert.SerializeObject(message));
+            Console.WriteLine(JsonConvert.SerializeObject(message));
         }
     }
     public class SecondStringMessageHandler : IHander<StringMessage>
     {
         public void Handle(StringMessage message, CancellationToken cancellationToken)
         {
-            //            Console.WriteLine("SecondStringMessageHandler:" + JsonConvert.SerializeObject(message));
+            Console.WriteLine("SecondStringMessageHandler:" + JsonConvert.SerializeObject(message));
         }
     }
     public class IntMessageHandler : IHander<IntMessage>
@@ -43,7 +47,7 @@ namespace Worker.Test
 
         public void Handle(IntMessage message, CancellationToken cancellationToken)
         {
-            //            Console.WriteLine(JsonConvert.SerializeObject(message));
+            Console.WriteLine(JsonConvert.SerializeObject(message));
         }
 
     }
@@ -59,21 +63,41 @@ namespace Worker.Test
                 stopWatch.Start();
                 var worker = WorkerOption
                 .New
-                .EnableInterceptor()
+                //                .EnableInterceptor()
                 .SetMaxTaskCount(maxThreadCount)
+                .SetDelaySecondsWhenNoMessageCome(5)
                 .CreateWorker();
                 worker.AddHandler(new IntMessageHandler());
                 worker.AddHandler(new StringMessageHandler());
                 worker.AddHandler(new SecondStringMessageHandler());
                 worker.Start();
 
-                worker.Publish(Enumerable.Range(1, 1000).Select(a => new StringMessage { Message = $"String Message:{a}" }));
-                worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message = a }));
+                worker.Publish(Enumerable.Range(1, 10).Select(a => new StringMessage { Message = $"String Message:{a}" }));
+                worker.Publish(Enumerable.Range(1, 10).Select(a => new IntMessage { Message = a }));
                 worker.WaitUntilNoMessage();
                 worker.Stop();
+                stopWatch.Stop();
                 Console.WriteLine($"maxThreadCount:{maxThreadCount},Milliseconds:{stopWatch.ElapsedMilliseconds}");
             });
 
+        }
+
+        [Test]
+        public void TestPersistenceWorker()
+        {
+            var worker = WorkerOption
+                .New
+                .UsePersistenceWorker()
+                .CreateWorker() as IPersistenceWorker;
+            worker.AddHandler(new IntMessageHandler());
+            worker.AddHandler(new StringMessageHandler());
+            worker.Start();
+            worker.Publish(Enumerable.Range(1, 10).Select(a => new StringMessage { Message = $"String Message:{a}" }));
+            worker.Publish(Enumerable.Range(1, 10).Select(a => new IntMessage { Message = a }));
+            worker.Publish(new StringMessage { Message = $"String Message:{100}" });
+            worker.WaitUntilNoMessage();
+            worker.Save();
+            worker.Stop();
         }
     }
 }

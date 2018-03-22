@@ -4,6 +4,7 @@ using Worker.Interface;
 
 namespace Worker.Implementation
 {
+
     public class DefaultHandlerManager : IHandlerManager
     {
         private readonly ILogger _logger;
@@ -14,12 +15,12 @@ namespace Worker.Implementation
             _logger = logger;
             Handlers = new List<object>();
         }
-        public void AddHandler<T>(IHander<T> handler) where T : IMessgae
+        public void AddHandler<T>(IHander<T> handler) where T : Messgae
         {
             Handlers.Add(handler);
         }
 
-        public void Handle<T>(T message,CancellationToken cancellationToken) where T : IMessgae
+        public void Handle<T>(T message,CancellationToken cancellationToken) where T : Messgae
         {
             Handlers.ForEach(a =>
             {

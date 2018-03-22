@@ -2,42 +2,46 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Worker.Implementation;
 using Worker.Interface;
 
 namespace Worker
 {
     public interface IWorker
     {
-        void AddHandler<T>(IHander<T> handler) where T : IMessgae;
-        void Publish<T>(T message) where T : IMessgae;
-        void Publish<T>(IEnumerable<T> messages) where T : IMessgae;
+        void AddHandler<T>(IHander<T> handler) where T : Messgae;
+        void Publish<T>(T message) where T : Messgae;
+        void Publish<T>(IEnumerable<T> messages) where T : Messgae;
         void Start();
         void Stop();
         void WaitUntilNoMessage();
+       
     }
     public class Worker : IWorker, IDisposable
     {
-        private readonly WorkerOption _options;
-        private IMessageQueue MessageQueue => _options.MessageQueue;
-        private IConsumer Consumer => _options.Consumer;
-        private IHandlerManager HandlerManager => _options.HandlerManager;
 
+        private readonly WorkerOption _options;
+        protected IMessageQueue MessageQueue => _options.MessageQueue;
+        protected IConsumer Consumer => _options.Consumer;
+        protected IHandlerManager HandlerManager => _options.HandlerManager;
+        protected IHistoryMessageManager HistoryMessageManager => _options.HistoryMessageManager;
+        protected IErrorMessageManager ErrorMessageManager => _options.ErrorMessageManager;
         public Worker(WorkerOption options)
         {
             _options = options;
         }
 
-        public void AddHandler<T>(IHander<T> handler) where T : IMessgae
+        public void AddHandler<T>(IHander<T> handler) where T : Messgae
         {
             HandlerManager.AddHandler(handler);
         }
 
-        public void Publish<T>(T message) where T : IMessgae
+        public void Publish<T>(T message) where T : Messgae
         {
             MessageQueue.Enqueue(message);
         }
 
-        public void Publish<T>(IEnumerable<T> items) where T : IMessgae
+        public void Publish<T>(IEnumerable<T> items) where T : Messgae
         {
             foreach (var item in items)
             {
@@ -58,9 +62,12 @@ namespace Worker
         {
             while (MessageQueue.HasValue() || Consumer.PendingTaskCount > 0)
             {
-                Task.Delay(TimeSpan.FromSeconds(1)).GetAwaiter().GetResult();
+                Task.Delay(TimeSpan.FromMilliseconds(1)).GetAwaiter().GetResult();
             }
         }
+
+       
+
         public void Dispose()
         {
             Stop();

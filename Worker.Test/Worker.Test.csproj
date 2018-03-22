@@ -48,6 +48,9 @@
     <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Polly, Version=5.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.5.8.0\lib\net45\Polly.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -69,6 +72,10 @@
     <ProjectReference Include="..\Worker.logger\Worker.logger.csproj">
       <Project>{fa87b260-3c33-4896-bceb-bee10b5ce3bb}</Project>
       <Name>Worker.logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Worker.Persistence\Worker.Persistence.csproj">
+      <Project>{28caf096-4303-4915-abc3-ac98cb26113f}</Project>
+      <Name>Worker.Persistence</Name>
     </ProjectReference>
     <ProjectReference Include="..\Worker\Worker.csproj">
       <Project>{e811f949-0495-4849-b55d-5c7dfcd9392f}</Project>

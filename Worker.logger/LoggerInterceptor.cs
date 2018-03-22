@@ -7,8 +7,6 @@ using Castle.DynamicProxy;
 using Newtonsoft.Json;
 using Worker.Interface;
 
-//using Castle.DynamicProxy;
-
 namespace Worker.logger
 {
 

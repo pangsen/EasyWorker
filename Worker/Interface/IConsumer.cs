@@ -1,4 +1,7 @@
-﻿namespace Worker.Interface
+﻿using System.Collections.Generic;
+using Worker.Implementation;
+
+namespace Worker.Interface
 {
     public interface IConsumer
     {
