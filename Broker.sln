@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Logger.Test", "Worke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Persistence", "Worker.Persistence\Worker.Persistence.csproj", "{28CAF096-4303-4915-ABC3-AC98CB26113F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Persistence.Test", "Worker.Persistence.Test\Worker.Persistence.Test.csproj", "{1661B131-D2A2-48BF-B73B-D67167F5647F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{28CAF096-4303-4915-ABC3-AC98CB26113F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28CAF096-4303-4915-ABC3-AC98CB26113F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28CAF096-4303-4915-ABC3-AC98CB26113F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1661B131-D2A2-48BF-B73B-D67167F5647F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1661B131-D2A2-48BF-B73B-D67167F5647F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1661B131-D2A2-48BF-B73B-D67167F5647F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1661B131-D2A2-48BF-B73B-D67167F5647F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

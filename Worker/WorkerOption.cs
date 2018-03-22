@@ -10,8 +10,7 @@ namespace Worker
         public Func<WorkerOption, IMessageQueue> MessageQueueFatory { get; set; }
         public Func<WorkerOption, IConsumer> ConsumerFatory { get; set; }
         public Func<WorkerOption, IHandlerManager> HandlerManagerFatory { get; set; }
-        public Func<WorkerOption, IHistoryMessageManager> HistoryMessageManagerFatory { get; set; }
-        public Func<WorkerOption, IErrorMessageManager> ErrorMessageManagerFatory { get; set; }
+        public Func<WorkerOption, IMessageManager> MessageManagerFatory { get; set; }
         public Func<WorkerOption, ILogger> LoggerFatory { get; set; }
         public static WorkerOption New => new WorkerOption();
         private int MaxTaskCount { get; set; }
@@ -19,8 +18,7 @@ namespace Worker
         public IMessageQueue MessageQueue { get; private set; }
         public IConsumer Consumer { get; private set; }
         public IHandlerManager HandlerManager { get; private set; }
-        public IHistoryMessageManager HistoryMessageManager { get; private set; }
-        public IErrorMessageManager ErrorMessageManager { get; private set; }
+        public IMessageManager MessageManager { get; private set; }
         public ILogger Logger { get; private set; }
 
         public Func<WorkerOption, IWorker> WorkerFactory { get; set; }
@@ -41,9 +39,8 @@ namespace Worker
             Logger = LoggerFatory != null ? LoggerFatory(this) : new ConsoleLogger();
             MessageQueue = MessageQueueFatory != null ? MessageQueueFatory(this) : new DefaultMessageQueue(Logger);
             HandlerManager = HandlerManagerFatory != null ? HandlerManagerFatory(this) : new DefaultHandlerManager(Logger);
-            HistoryMessageManager = HistoryMessageManagerFatory != null ? HistoryMessageManagerFatory(this) : new DefaultHistoryMessageManager(Logger);
-            ErrorMessageManager = ErrorMessageManagerFatory != null ? ErrorMessageManagerFatory(this) : new DefaultErrorMessageManager(Logger);
-            Consumer = ConsumerFatory != null ? ConsumerFatory(this) : new MultipleThreadConsumer(MessageQueue, HandlerManager, Logger, HistoryMessageManager, ErrorMessageManager);
+            MessageManager = MessageManagerFatory != null ? MessageManagerFatory(this) : new DefaultMessageManager(Logger);
+            Consumer = ConsumerFatory != null ? ConsumerFatory(this) : new MultipleThreadConsumer(MessageQueue, HandlerManager, Logger, MessageManager);
             if (MaxTaskCount != 0)
             {
                 Consumer.SetMaxTaskCount(MaxTaskCount);

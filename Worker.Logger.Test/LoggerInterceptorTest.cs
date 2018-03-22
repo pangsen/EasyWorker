@@ -12,26 +12,26 @@ using Worker.logger;
 
 namespace Worker.Logger.Test
 {
-   
+
     public class Handler : IHander<StringMessage>
     {
-        public void Handle(StringMessage message,CancellationToken cancellationToken )
+        public void Handle(StringMessage message, CancellationToken cancellationToken)
         {
-            
+
         }
     }
 
-    public class StringMessage : Messgae
+    public class StringMessage : Message
     {
     }
 
-    public class TestLoggerInterceptor
+    public class LoggerInterceptorTest
     {
         [Test]
         public void Run()
         {
 
-            var worker=WorkerOption.New
+            var worker = WorkerOption.New
                 .EnableInterceptor()
                 .CreateWorker();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Worker.Interface;
 
 namespace Worker.Implementation
@@ -7,7 +8,7 @@ namespace Worker.Implementation
     {
         public void Write(string message)
         {
-            Console.WriteLine(message);
+            Debug.WriteLine(message);
         }
     }
 }

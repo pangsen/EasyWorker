@@ -13,12 +13,12 @@ using Worker.Interface;
 namespace Worker.Test
 {
 
-    public class SiteProfile : Messgae
+    public class SiteProfile : Message
     {
         public string SiteAddress { get; set; }
     }
 
-    public class ArticleProfile : Messgae
+    public class ArticleProfile : Message
     {
         public string NugetLink { get; set; }
         public string ProjectLink { get; set; }
@@ -27,7 +27,7 @@ namespace Worker.Test
 
     public class SiteHandler : IHander<SiteProfile>
     {
-        public void Handle(SiteProfile message,CancellationToken cancellationToken)
+        public void Handle(SiteProfile message, CancellationToken cancellationToken)
         {
             var document = new HtmlDocument();
             using (var client = new HttpClient())
@@ -60,7 +60,7 @@ namespace Worker.Test
             Console.WriteLine($"{message.Title}:{message.ProjectLink}");
         }
     }
-    public class TestGetUngetPackages
+    public class GetUngetPackagesTest
     {
         [Test]
         public void GetUngetPackages()

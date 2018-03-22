@@ -6,8 +6,7 @@
         {
 
             options.MessageQueueFatory = (ops) => new PersistenceMessageQueue(ops.Logger);
-            options.HistoryMessageManagerFatory = (ops) => new PersistenceHistoryMessageManager();
-            options.ErrorMessageManagerFatory = (ops) => new PersistenceErrorMessageManager();
+            options.MessageManagerFatory = (ops) => new PersistenceMessageManager();
             options.WorkerFactory = (ops) => new PersistenceWorker(ops);
             return options;
         }

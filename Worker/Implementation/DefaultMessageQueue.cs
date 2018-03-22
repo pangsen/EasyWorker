@@ -8,13 +8,13 @@ namespace Worker.Implementation
     {
         private readonly ILogger _logger;
         private readonly object _lock = new object();
-        protected Queue<Messgae> Queue { get; set; }
+        protected Queue<Message> Queue { get; set; }
         public DefaultMessageQueue(ILogger logger)
         {
             _logger = logger;
             Queue = Load();
         }
-        public void Enqueue(Messgae message)
+        public void Enqueue(Message message)
         {
             lock (_lock)
             {
@@ -23,7 +23,7 @@ namespace Worker.Implementation
 
         }
 
-        public Messgae Dequeue()
+        public Message Dequeue()
         {
             lock (_lock)
             {
@@ -55,9 +55,14 @@ namespace Worker.Implementation
             throw new System.NotImplementedException();
         }
 
-        public virtual Queue<Messgae> Load()
+        public virtual Queue<Message> Load()
         {
-            return new Queue<Messgae>();
+            return new Queue<Message>();
+        }
+
+        public List<Message> GetAll()
+        {
+            return Queue.ToList();
         }
     }
 }

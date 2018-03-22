@@ -15,12 +15,12 @@ namespace Worker.Implementation
             _logger = logger;
             Handlers = new List<object>();
         }
-        public void AddHandler<T>(IHander<T> handler) where T : Messgae
+        public void AddHandler<T>(IHander<T> handler) where T : Message
         {
             Handlers.Add(handler);
         }
 
-        public void Handle<T>(T message,CancellationToken cancellationToken) where T : Messgae
+        public void Handle<T>(T message,CancellationToken cancellationToken) where T : Message
         {
             Handlers.ForEach(a =>
             {
