@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "Worker\Worker.csproj", "{E811F949-0495-4849-B55D-5C7DFCD9392F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWorker", "EasyWorker\EasyWorker.csproj", "{E811F949-0495-4849-B55D-5C7DFCD9392F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Test", "Worker.Test\Worker.Test.csproj", "{CE88342D-E710-4CD3-B9AC-F1F0F9BF1F99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWorker.Test", "EasyWorker.Test\EasyWorker.Test.csproj", "{CE88342D-E710-4CD3-B9AC-F1F0F9BF1F99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.logger", "Worker.logger\Worker.logger.csproj", "{FA87B260-3C33-4896-BCEB-BEE10B5CE3BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWorker.logger", "EasyWorker.logger\EasyWorker.logger.csproj", "{FA87B260-3C33-4896-BCEB-BEE10B5CE3BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Logger.Test", "Worker.Logger.Test\Worker.Logger.Test.csproj", "{00608838-7267-4AD8-A1D6-CA7444DFF493}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWorker.Logger.Test", "EasyWorker.Logger.Test\EasyWorker.Logger.Test.csproj", "{00608838-7267-4AD8-A1D6-CA7444DFF493}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Persistence", "Worker.Persistence\Worker.Persistence.csproj", "{28CAF096-4303-4915-ABC3-AC98CB26113F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWorker.Persistence", "EasyWorker.Persistence\EasyWorker.Persistence.csproj", "{28CAF096-4303-4915-ABC3-AC98CB26113F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

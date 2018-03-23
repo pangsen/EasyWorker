@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Worker.Implementation;
 using Worker.Interface;
@@ -26,14 +24,14 @@ namespace Worker
     {
 
         private readonly WorkerOption _options;
-        protected IMessageQueue MessageQueue => _options.MessageQueue;
+        protected IQueueMessager  QueueMessager => _options.MessageManager.QueueMessager;
         protected IConsumer Consumer => _options.Consumer;
         protected IHandlerManager HandlerManager => _options.HandlerManager;
         protected IMessageManager MessageManager => _options.MessageManager;
         public Worker(WorkerOption options)
         {
             _options = options;
-            MessageManager.GetPendingMessages().ForEach(Publish);
+           
         }
         public void AddHandler<T>(IHander<T> handler) where T : Message
         {
@@ -41,7 +39,7 @@ namespace Worker
         }
         public void Publish<T>(T message) where T : Message
         {
-            MessageQueue.Enqueue(message);
+            QueueMessager.Enqueue(message);
         }
         public void Publish<T>(IEnumerable<T> items) where T : Message
         {
@@ -60,7 +58,7 @@ namespace Worker
         }
         public void WaitUntilNoMessage()
         {
-            while (MessageQueue.HasValue() || Consumer.PendingTaskCount > 0)
+            while (QueueMessager.HasValue() || Consumer.PendingTaskCount > 0)
             {
                 Task.Delay(TimeSpan.FromMilliseconds(1)).GetAwaiter().GetResult();
             }
@@ -79,7 +77,7 @@ namespace Worker
         }
         public List<Message> GetQueuedMessages()
         {
-            return MessageQueue.GetAll();
+            return QueueMessager.GetQueuedMessages();
         }
 
         public void RePublishErrorMessages()

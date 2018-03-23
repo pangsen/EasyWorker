@@ -14,18 +14,18 @@ namespace Worker.Test
         {
             var worker = WorkerOption
                 .New
-                .UsePersistenceWorker()
-                .CreateWorker() as IPersistenceWorker;
+                .UsePersistenceWorker("TestWorker")
+                .CreateWorker<IPersistenceWorker>();
 
             worker.AddHandler(new IntMessageHandler());
             worker.Start();
-            //
-            //            worker.Publish(Enumerable.Range(1, 1000).Select(a => new IntMessage { Message =a }));
-            //            worker.RePublishErrorMessages();
+
+            worker.Publish(Enumerable.Range(1, 10).Select(a => new IntMessage { Message = a }));
+            worker.RePublishErrorMessages();
             worker.WaitUntilNoMessage();
             worker.Publish(Enumerable.Range(1, 220).Select(a => new IntMessage { Message = a }));
             Task.Delay(TimeSpan.FromSeconds(6)).GetAwaiter().GetResult();
-            worker.Save();
+            worker.SaveState();
             worker.Stop();
         }
 

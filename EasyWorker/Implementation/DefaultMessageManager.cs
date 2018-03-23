@@ -15,7 +15,11 @@ namespace Worker.Implementation
         {
             _logger = logger;
             Message = new List<Message>();
+            QueueMessager=new DefaultQueueMessager(logger);
         }
+
+        public IQueueMessager QueueMessager { get; set; }
+
         public List<Message> GetHistoryMessages()
         {
             lock (_lock)
@@ -70,11 +74,6 @@ namespace Worker.Implementation
             {
                 Message.Remove(Message.Single(a => a.Id == id));
             }
-        }
-
-        public void Save()
-        {
-            _logger.Write("SaveHistoryMessgae");
         }
     }
 }

@@ -4,15 +4,15 @@ using Worker.Interface;
 
 namespace Worker.Implementation
 {
-    public class DefaultMessageQueue : IMessageQueue
+    public class DefaultQueueMessager : IQueueMessager
     {
         private readonly ILogger _logger;
         private readonly object _lock = new object();
         protected Queue<Message> Queue { get; set; }
-        public DefaultMessageQueue(ILogger logger)
+        public DefaultQueueMessager(ILogger logger)
         {
             _logger = logger;
-            Queue = Load();
+            Queue = new Queue<Message>();
         }
         public void Enqueue(Message message)
         {
@@ -50,19 +50,12 @@ namespace Worker.Implementation
             }
         }
 
-        public virtual void Save()
+        public List<Message> GetQueuedMessages()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public virtual Queue<Message> Load()
-        {
-            return new Queue<Message>();
-        }
-
-        public List<Message> GetAll()
-        {
-            return Queue.ToList();
+            lock (_lock)
+            {
+                return Queue.ToList();
+            }
         }
     }
 }

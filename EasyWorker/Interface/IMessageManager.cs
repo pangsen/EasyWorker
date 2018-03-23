@@ -6,6 +6,7 @@ namespace Worker.Interface
 {
     public interface IMessageManager
     {
+        IQueueMessager QueueMessager { get; set; }
         List<Message> GetHistoryMessages();
         List<Message> GetErrorMessages();
         List<Message> GetPendingMessages();
@@ -13,6 +14,5 @@ namespace Worker.Interface
         void AddErrorMessgae(Message message);
         void AddPendingMessgae(Message message);
         void RemoveErrorMessage(Guid id);
-        void Save();
     }
 }

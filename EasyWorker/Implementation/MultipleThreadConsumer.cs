@@ -11,7 +11,7 @@ namespace Worker.Implementation
     {
         private readonly ILogger _logger;
         private IMessageManager MessageManager { get; set; }
-        public IMessageQueue MessageQueue { get; set; }
+        public IQueueMessager QueueMessager { get; set; }
         public IHandlerManager HandlerManager { get; set; }
         public int PendingTaskCount { get; set; }
         private bool IsStop { get; set; }
@@ -19,7 +19,6 @@ namespace Worker.Implementation
         private int MaxTaskCount { get; set; }
         private static readonly object Lock = new object();
         public MultipleThreadConsumer(
-            IMessageQueue messageQueue,
             IHandlerManager handlerManager,
             ILogger logger,
             IMessageManager messageManager,
@@ -28,7 +27,7 @@ namespace Worker.Implementation
         {
             _logger = logger;
             MessageManager = messageManager;
-            MessageQueue = messageQueue;
+            QueueMessager = messageManager.QueueMessager;
             HandlerManager = handlerManager;
             MaxTaskCount = maxTaskCount;
             DelayTimeWhenNoMessageCome = TimeSpan.FromSeconds(delaySecondsWhenNoMessageCome);
@@ -78,9 +77,9 @@ namespace Worker.Implementation
         }
         private void Run()
         {
-            if (PendingTaskCount < MaxTaskCount && MessageQueue.HasValue())
+            if (PendingTaskCount < MaxTaskCount && QueueMessager.HasValue())
             {
-                var message = (dynamic)MessageQueue.Dequeue();
+                var message = (dynamic)QueueMessager.Dequeue();
                 IncreasePendingTaskCount();
 
                 Task.Run(() =>
@@ -101,7 +100,7 @@ namespace Worker.Implementation
                     }, TaskContinuationOptions.OnlyOnFaulted);
 
             }
-            else if (PendingTaskCount == 0 && !MessageQueue.HasValue())
+            else if (PendingTaskCount == 0 && !QueueMessager.HasValue())
             {
                 Task.Delay(DelayTimeWhenNoMessageCome).GetAwaiter().GetResult();
             }

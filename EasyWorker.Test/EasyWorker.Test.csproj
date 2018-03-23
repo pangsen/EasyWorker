@@ -70,17 +70,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Worker.logger\Worker.logger.csproj">
+    <ProjectReference Include="..\EasyWorker.logger\EasyWorker.logger.csproj">
       <Project>{fa87b260-3c33-4896-bceb-bee10b5ce3bb}</Project>
-      <Name>Worker.logger</Name>
+      <Name>EasyWorker.logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Worker.Persistence\Worker.Persistence.csproj">
+    <ProjectReference Include="..\EasyWorker.Persistence\EasyWorker.Persistence.csproj">
       <Project>{28caf096-4303-4915-abc3-ac98cb26113f}</Project>
-      <Name>Worker.Persistence</Name>
+      <Name>EasyWorker.Persistence</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Worker\Worker.csproj">
+    <ProjectReference Include="..\EasyWorker\EasyWorker.csproj">
       <Project>{e811f949-0495-4849-b55d-5c7dfcd9392f}</Project>
-      <Name>Worker</Name>
+      <Name>EasyWorker</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

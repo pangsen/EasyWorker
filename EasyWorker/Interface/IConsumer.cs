@@ -6,7 +6,7 @@ namespace Worker.Interface
     public interface IConsumer
     {
         int PendingTaskCount { get; set; }
-        IMessageQueue MessageQueue { get; set; }
+//        IQueueMessager QueueMessager { get; set; }
         IHandlerManager HandlerManager { get; set; }
         void Stop();
         void Start();

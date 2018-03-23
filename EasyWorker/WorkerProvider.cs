@@ -7,7 +7,7 @@
         {
             if (Worker == null)
             {
-                Worker = WorkerOption.New.CreateWorker();
+                Worker = WorkerOption.New.CreateWorker<IWorker>();
             }
             return Worker;
         }

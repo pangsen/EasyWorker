@@ -33,7 +33,7 @@ namespace Worker.Logger.Test
 
             var worker = WorkerOption.New
                 .EnableInterceptor()
-                .CreateWorker();
+                .CreateWorker<IWorker>();
 
             worker.AddHandler(new Handler());
             worker.Publish(new StringMessage());

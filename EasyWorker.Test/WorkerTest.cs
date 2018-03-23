@@ -1,18 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using Polly;
-using Polly.Timeout;
 using Worker.Implementation;
 using Worker.Interface;
-using Worker.logger;
 
 namespace Worker.Test
 {
@@ -65,7 +59,7 @@ namespace Worker.Test
                 //                .EnableInterceptor()
                 .SetMaxTaskCount(maxThreadCount)
                 .SetDelaySecondsWhenNoMessageCome(5)
-                .CreateWorker();
+                .CreateWorker<IWorker>();
                 worker.AddHandler(new IntMessageHandler());
                 worker.AddHandler(new StringMessageHandler());
                 worker.AddHandler(new SecondStringMessageHandler());

@@ -5,6 +5,7 @@ namespace Worker.Persistence
 {
     public interface IPersistenceWorker : IWorker
     {
-        void Save();
+        void SaveState();
+        void LoadDataForMessageManager();
     }
 }

@@ -6,8 +6,6 @@ namespace Worker
 {
     public class WorkerOption
     {
-
-        public Func<WorkerOption, IMessageQueue> MessageQueueFatory { get; set; }
         public Func<WorkerOption, IConsumer> ConsumerFatory { get; set; }
         public Func<WorkerOption, IHandlerManager> HandlerManagerFatory { get; set; }
         public Func<WorkerOption, IMessageManager> MessageManagerFatory { get; set; }
@@ -15,7 +13,6 @@ namespace Worker
         public static WorkerOption New => new WorkerOption();
         private int MaxTaskCount { get; set; }
         private int DelaySecondsWhenNoMessageCome { get; set; }
-        public IMessageQueue MessageQueue { get; private set; }
         public IConsumer Consumer { get; private set; }
         public IHandlerManager HandlerManager { get; private set; }
         public IMessageManager MessageManager { get; private set; }
@@ -34,13 +31,12 @@ namespace Worker
             DelaySecondsWhenNoMessageCome = delaySecondsWhenNoMessageCome;
             return this;
         }
-        public IWorker CreateWorker()
+        public T CreateWorker<T>() where T : IWorker
         {
             Logger = LoggerFatory != null ? LoggerFatory(this) : new ConsoleLogger();
-            MessageQueue = MessageQueueFatory != null ? MessageQueueFatory(this) : new DefaultMessageQueue(Logger);
             HandlerManager = HandlerManagerFatory != null ? HandlerManagerFatory(this) : new DefaultHandlerManager(Logger);
             MessageManager = MessageManagerFatory != null ? MessageManagerFatory(this) : new DefaultMessageManager(Logger);
-            Consumer = ConsumerFatory != null ? ConsumerFatory(this) : new MultipleThreadConsumer(MessageQueue, HandlerManager, Logger, MessageManager);
+            Consumer = ConsumerFatory != null ? ConsumerFatory(this) : new MultipleThreadConsumer(HandlerManager, Logger, MessageManager);
             if (MaxTaskCount != 0)
             {
                 Consumer.SetMaxTaskCount(MaxTaskCount);
@@ -50,11 +46,11 @@ namespace Worker
             {
                 Consumer.SetDelaySecondsWhenNoMessageCome(MaxTaskCount);
             }
-            if (WorkerFactory != null)
+            if (WorkerFactory == null)
             {
-                return WorkerFactory(this);
+                WorkerFactory = (ops) => new Worker(ops);
             }
-            return new Worker(this);
+            return (T)WorkerFactory(this);
         }
     }
 }
